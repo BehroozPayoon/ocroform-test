@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "ocroform-test"
+version = "1.0.0"
+description = ""
+authors = ["Behrooz Payoon <behrooz.payoon@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlalchemy = "2.0.35"
+pydantic-settings = "^2.8.1"
+fastapi = "^0.115.11"
+pypdf2 = "^3.0.1"
+pandas = "^2.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
