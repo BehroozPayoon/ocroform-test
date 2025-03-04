@@ -30,7 +30,6 @@ class DailyBalanceFetcher:
 
     def single_extract(self, file_name: str):
         pdf_path = os.path.join(self.pdf_directory, file_name)
-        print(pdf_path)
         balances = self.extract_daily_balances(pdf_path)
         result = [
             (*balance, file_name) for balance in balances
@@ -52,9 +51,18 @@ class DailyBalanceFetcher:
         return self._format_result(all_balances)
 
     def _format_result(self, balances):
+        self._create_results_folder()
         df = pd.DataFrame(
             balances,
             columns=['Date', 'Balance', 'Source File']
         )
         df.to_csv(f'./results/{datetime.now()}.csv', index=False)
         return df
+
+    def _create_results_folder(self):
+        folder_path = "./results"
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            print(f"Folder '{folder_path}' created.")
+        else:
+            print(f"Folder '{folder_path}' already exists.")
