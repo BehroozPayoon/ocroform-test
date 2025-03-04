@@ -6,12 +6,12 @@ from .schemas.requests import SingleFetchRequest
 balance_router = APIRouter(prefix="/balances", tags=["Balance"])
 
 
-@take_router.post("/single")
+@balance_router.post("/single")
 async def fetch_single_daily_balance(request: SingleFetchRequest,
                                      service: BalanceResultService = Depends()):
-    pass
+    await service.operate_single_file(file_name=request.source_file)
 
 
-@take_router.post("/batch")
+@balance_router.post("/batch")
 async def add_user_take(service: BalanceResultService = Depends()):
-    pass
+    await service.operate_batch()

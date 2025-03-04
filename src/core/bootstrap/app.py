@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 
 from src.core.settings import get_settings
-from src.core.db import database
 from .middlewares import init_middlewares
 from .routers import init_routers
 from .handlers import init_handlers
@@ -15,8 +14,6 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
     )
-
-    app_.dependency_overrides.setdefault(*database.override_session)
 
     # Initializing required dependencies
     init_handlers(app_=app_)

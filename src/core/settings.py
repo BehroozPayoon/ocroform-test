@@ -9,9 +9,6 @@ class Settings(BaseSettings):
     version: str = "1.0.0"
     level: str = ""
 
-    database_uri: str = ""
-    sqlalchemy_echo: bool = False
-
     log_level: str = "DEBUG"
     log_format: str = (
         "time: {time:YYYY-MM-DD HH:mm:ss Z} | "

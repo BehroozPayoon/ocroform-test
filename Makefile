@@ -1,4 +1,4 @@
-ifneq ($(wildcard docker/.env.example),)
+ifneq ($(wildcard .env.example),)
     ENV_FILE = .env.example
 endif
 ifneq ($(wildcard .env.example),)
@@ -6,7 +6,7 @@ ifneq ($(wildcard .env.example),)
     	include .env.example
 	endif
 endif
-ifneq ($(wildcard docker/.env),)
+ifneq ($(wildcard .env),)
     ENV_FILE = .env
 endif
 ifneq ($(wildcard .env),)
@@ -15,11 +15,10 @@ ifneq ($(wildcard .env),)
 	endif
 endif
 
-docker_compose = docker compose -f docker/docker-compose.yml --env-file docker/$(ENV_FILE)
-docker_compose_development = docker compose -f docker/docker-compose.development.yml --env-file docker/$(ENV_FILE)
+docker_compose = docker compose -f docker-compose.yml --env-file $(ENV_FILE)
+docker_compose_development = docker compose -f docker-compose.development.yml --env-file $(ENV_FILE)
 
 export
-
 
 .SILENT:
 .PHONY: help
@@ -36,10 +35,6 @@ install: ## Installations
 test: ## Test applications
 	poetry run pytest
 
-.PHONY: migrate-db
-migrate-db: ## Migrate database and add initial data
-	poetry run python -m cmd.database_migrator.main
-
 .PHONY: run-api
 run-api: ## Run backend
 	poetry run gunicorn --reload --bind $(HOST):$(BACKEND_PORT) \
@@ -49,22 +44,6 @@ run-api: ## Run backend
 .PHONY: develop-api
 develop-api: ## Hot reload backend
 	poetry run uvicorn src.server:app --reload --host 0.0.0.0 --port 8080 --log-level debug
-
-.PHONY: develop-amqp-worker
-develop-amqp-worker:
-	poetry run jurigged -v src/amqp.py
-
-.PHONY: run-amqp-worker
-run-amqp-worker:
-	python -m src.amqp
-
-.PHONY: migrate-create
-migrate-create: ## Create new migration
-	poetry run alembic revision -m $(name)
-
-.PHONY: migrate-up
-migrate-up: ## Migration up
-	poetry run alembic upgrade head
 
 .PHONY: compose-build
 compose-build: ## Build or rebuild services
@@ -81,11 +60,6 @@ compose-up: ## Create and start containers
 .PHONY: compose-develop
 compose-develop: ## Create and start containers in development mode
 	$(docker_compose_development) up -d
-
-.PHONY: compose-test
-compose-test: ## Create container for test and log the result
-	docker compose -f docker/docker-compose.test.yml up -d
-	docker compose -f docker/docker-compose.test.yml logs -f 
 
 .PHONY: compose-logs
 compose-logs: ## View output from containers

@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ocr_test_api
+    command: "make develop-api"
+    restart: always
+    env_file:
+      - ${ENV_FILE}
+    networks:
+      - backend
+    volumes:
+      - ./.:/app
+    ports:
+      - 8011:8080
+
+networks:
+  backend:
+    external: true

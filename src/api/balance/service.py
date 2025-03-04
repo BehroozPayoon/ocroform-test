@@ -1,13 +1,14 @@
-from fastapi import Depends
+from datetime import datetime
 
-from .repository import BalanceResultRepository
-
+from src.core.ocr import DailyBalanceFetcher
 
 class BalanceResultService:
 
-    def __init__(self, repository: BalanceResultRepository = Depends()):
-        self.repository = repository
+    def __init__(self):
+        self.daily_fetcher = DailyBalanceFetcher()
 
-    async def save_result(self, balance_date: str, balance: float, source_file: str):
-        await self.repository.save_result(balance_date=balance_date, balance=balance,
-                                          source_file=source_file)
+    async def operate_single_file(self, file_name: str):
+        results = self.daily_fetcher.single_extract(file_name=file_name)
+
+    async def operate_batch(self):
+        results = self.daily_fetcher.batch_extract_daily_balances()
